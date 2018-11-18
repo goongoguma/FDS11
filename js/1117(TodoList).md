@@ -112,7 +112,7 @@ class TodoList extends React.Component {
 }
 ```
 
-5. HandleAddList에서 form의 onSubmit에 입력할 함수 formSubmitChild를 만든다.
+6. HandleAddList에서 form의 onSubmit에 입력할 함수 formSubmitChild를 만든다.
 
 ```js
 class HandleAddList extends React.Component {
@@ -139,7 +139,7 @@ class HandleAddList extends React.Component {
 }
 ```
 
-6. TodoList 컴포넌트에서 props로 받은 formSubmit 함수와 HandleAddList에서 생성한 formSubmitChild 함수를 연결시켜준다.
+7. TodoList 컴포넌트에서 props로 받은 formSubmit 함수와 HandleAddList에서 생성한 formSubmitChild 함수를 연결시켜준다.
 
 ```js
 class HandleAddList extends React.Component {
@@ -176,7 +176,7 @@ class HandleAddList extends React.Component {
 }
 ```
 
-7. 전체삭제 버튼을 만들기 위해서는 부모 컴포넌트의 값을 수정하는 것이 되므로 부모 컴포넌트에서 함수를 만들어 자식에게 전달해줘야한다.
+8. 전체삭제 버튼을 만들기 위해서는 부모 컴포넌트의 값을 수정하는 것이 되므로 부모 컴포넌트에서 함수를 만들어 자식에게 전달해줘야한다.
 
 ```js
 class TodoList extends React.Component {
@@ -234,17 +234,16 @@ class HandleLists extends React.Component {
 }
 ```
 
-8. input의 입력가능 유무는 입력되는 함수를 생성한 부모인 TodoList 컴포넌트에서 설정하는게 좋다.
+9. input의 입력가능 유무는 입력되는 함수를 생성한 부모인 TodoList 컴포넌트에서 설정하는게 좋다.
 
 ```js
 formSubmit(list) {
     // 빈칸
-    if (this.state.todoArr.indexOf(list) === 0) {
+    if (!list) {
       alert("Please Enter valid text");
       // 중복
     } else if (this.state.todoArr.indexOf(list) > -1) {
       alert("This is already in the list");
-      // 빈칸이 없으며 중복도 없음
     } else if (this.state.todoArr.indexOf(list) === -1) {
       this.setState(prevState => {
         return {
@@ -255,7 +254,11 @@ formSubmit(list) {
   }
 ```
 
-9. 각 리스트의 삭제버튼을 설정하기 위해서는 부모인 TodoList 컴포넌트로 올라가서 함수를 만든 뒤 그 함수를 HandleLists에 전달, 다시 한번 HandleLists의 자식 컴포넌트인 HandleList 컴포넌트에게 전달하는것이 좋다. 또한 원본배열을 유지하기 위해 filter 메소드를 사용하여 내가 삭제할 요소를 제외한 나머지 요소들로 새로운 배열을 반환하는 함수를 만들어야 한다. 여기서 주의해아할 점은 HandleList가 받은 함수의 onClick은 화살표 함수로 작성되어야한다.
+10. 각 리스트 삭제버튼 생성하기
+
+- 각 리스트의 삭제버튼을 생성하기 위해서는 부모인 TodoList 컴포넌트로 올라가서 함수를 만든 뒤 그 함수를 HandleLists에 전달한 뒤 다시 한번 HandleLists의 자식 컴포넌트인 HandleList 컴포넌트에게 전달하는것이 좋다.
+
+- 원본배열을 유지하기 위해 filter 메소드를 사용하여 내가 삭제할 요소를 제외한 나머지 요소들로 새로운 배열을 반환하는 함수를 만들어야 한다. 여기서 주의해아할 점은 HandleList가 받은 함수의 onClick은 화살표 함수로 작성되어야한다. (일반함수의 this와 화살표 함수 this의 차이점 때문)
 
 ```js
 // TodoList 컴포넌트 안에 작성한 뒤 HandleLists로 전달
@@ -317,31 +320,31 @@ class HandleList extends React.Component {
 }
 ```
 
-10. 빈칸 만들어주기
+11. 빈칸 만들어주기
 
-  * todo의 값을 state에 넣어줌으로써 state를 진리의 유일한 원천 (single source of truth)“으로 만든다.
+- todo의 값을 state에 넣어줌으로써 state를 진리의 유일한 원천 (single source of truth)“으로 만든다.
 
-  * 그 뒤 this.state.todo를 업데이트 할 함수 handleChange를 만들어주게되면 입력을 할 때마다 handleChange 가 동작하고 React state가 업데이트되므로, 표시되는 값은 사용자의 입력에 따라 업데이트된다. 
-  
-  * 버튼을 클릭하게 되면 input이 비어져야 함으로, 마지막으로 업데이트 되는 todo의 상태를 다시 빈칸으로 설정해줘야한다.
+- 그 뒤 this.state.todo를 업데이트 할 함수 handleChange를 만들어주게되면 입력을 할 때마다 handleChange 가 동작하고 React state가 업데이트되므로, 표시되는 값은 사용자의 입력에 따라 업데이트된다.
 
-  * 참고 : https://reactjs-org-ko.netlify.com/docs/forms.html에서 "제어되는 컴포넌트" 
-  
+- 버튼을 클릭하게 되면 input이 비어져야 함으로, 마지막으로 업데이트 되는 todo의 상태를 다시 빈칸으로 설정해줘야한다.
+
+- 참고 : https://reactjs-org-ko.netlify.com/docs/forms.html에서 "제어되는 컴포넌트"
+
 ```js
 class HandleAddList extends React.Component {
   constructor(props) {
     super(props);
     this.formSubmitChild = this.formSubmitChild.bind(this);
-    this.handleChange = this.handleChange.bind(this)
+    this.handleChange = this.handleChange.bind(this);
     this.state = {
-      todo: '',
+      todo: ""
     };
   }
 
   handleChange(e) {
     this.setState({
       todo: e.target.value
-    })
+    });
   }
 
   formSubmitChild(e) {
@@ -351,24 +354,29 @@ class HandleAddList extends React.Component {
 
     this.setState(() => {
       return {
-        todo: this.props.formSubmit(inputVal),
+        todo: this.props.formSubmit(inputVal)
       };
     });
     this.setState({
-      todo: ''
-    })
+      todo: ""
+    });
   }
 
   render() {
     return (
       <div>
-        <form onSubmit={this.formSubmitChild} >
-          <input type="text" name="todoinput" autoFocus={true} onChange={this.handleChange} value={this.state.todo}/>
+        <form onSubmit={this.formSubmitChild}>
+          <input
+            type="text"
+            name="todoinput"
+            autoFocus={true}
+            onChange={this.handleChange}
+            value={this.state.todo}
+          />
           <button>추가</button>
         </form>
       </div>
     );
   }
 }
-
 ```
