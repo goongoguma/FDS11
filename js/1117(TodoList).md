@@ -316,3 +316,59 @@ class HandleList extends React.Component {
   }
 }
 ```
+
+10. 빈칸 만들어주기
+
+  * todo의 값을 state에 넣어줌으로써 state를 진리의 유일한 원천 (single source of truth)“으로 만든다.
+
+  * 그 뒤 this.state.todo를 업데이트 할 함수 handleChange를 만들어주게되면 입력을 할 때마다 handleChange 가 동작하고 React state가 업데이트되므로, 표시되는 값은 사용자의 입력에 따라 업데이트된다. 
+  
+  * 버튼을 클릭하게 되면 input이 비어져야 함으로, 마지막으로 업데이트 되는 todo의 상태를 다시 빈칸으로 설정해줘야한다.
+
+  * 참고 : https://reactjs-org-ko.netlify.com/docs/forms.html에서 "제어되는 컴포넌트" 
+  
+```js
+class HandleAddList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.formSubmitChild = this.formSubmitChild.bind(this);
+    this.handleChange = this.handleChange.bind(this)
+    this.state = {
+      todo: '',
+    };
+  }
+
+  handleChange(e) {
+    this.setState({
+      todo: e.target.value
+    })
+  }
+
+  formSubmitChild(e) {
+    e.preventDefault();
+
+    const inputVal = e.target.elements.todoinput.value.trim();
+
+    this.setState(() => {
+      return {
+        todo: this.props.formSubmit(inputVal),
+      };
+    });
+    this.setState({
+      todo: ''
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.formSubmitChild} >
+          <input type="text" name="todoinput" autoFocus={true} onChange={this.handleChange} value={this.state.todo}/>
+          <button>추가</button>
+        </form>
+      </div>
+    );
+  }
+}
+
+```
